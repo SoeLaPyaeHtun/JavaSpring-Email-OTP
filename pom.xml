@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>net.codejava</groupId>
-	<artifactId>SpringBootRegistrationLogin</artifactId>
+	<artifactId>Login_</artifactId>
 	<version>1.0</version>
-	<name>SpringBootRegistrationLogin</name>
+	<name>Login_</name>
 	<description>Demo registration (sign up) and Login (Sign in)</description>
 
 	<properties>

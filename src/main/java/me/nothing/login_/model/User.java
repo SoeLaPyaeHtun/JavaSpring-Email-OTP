@@ -1,5 +1,7 @@
 package me.nothing.login_.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,5 +29,11 @@ public class User {
 	
 	@Column(nullable = false, length = 20)
 	private String username;
+
+	@Column(name="one_time_password")
+	private String otp;
+
+	@Column(name = "requested_time")
+	private Date requestedTime;
 	
 }
