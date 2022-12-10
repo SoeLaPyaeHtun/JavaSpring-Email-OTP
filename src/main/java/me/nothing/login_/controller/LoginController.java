@@ -9,4 +9,9 @@ public class LoginController {
 	public String listUsers(Model model) {
 		return "index";
 	}
+
+	@GetMapping("/login")
+	public String login(){
+		return "login";
+	}
 }
