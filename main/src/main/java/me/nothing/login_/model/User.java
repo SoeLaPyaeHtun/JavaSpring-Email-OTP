@@ -1,6 +1,6 @@
 package me.nothing.login_.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +30,24 @@ public class User {
 	@Column(nullable = false, length = 20)
 	private String username;
 
-	@Column(name="one_time_password")
+	@Column(name = "one_time_password")
 	private String otp;
 
 	@Column(name = "requested_time")
-	private Date requestedTime;
+	private Date otptime;
 	
+	private static final long otpDuration = 5 * 6 * 1000;
+
+	public boolean isOTPRequired(){
+		if(this.otp == null){
+			return false;
+		}
+		long otpReqTimeToMil = this.otptime.getTime();
+
+		if(otpReqTimeToMil + otpDuration < System.currentTimeMillis()){
+			return false; //otp expire
+		}
+		
+		return true;
+	}
 }

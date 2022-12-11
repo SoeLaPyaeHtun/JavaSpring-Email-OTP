@@ -8,14 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
-public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
+
+@Component
+public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        // TODO Auto-generated method stub
+                System.out.println("success");
         super.onAuthenticationSuccess(request, response, authentication);
     }
+
     
 }

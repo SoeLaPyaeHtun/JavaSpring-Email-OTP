@@ -2,14 +2,18 @@ package me.nothing.login_.model;
 
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class CustomUserDetails implements UserDetails {
+import me.nothing.login_.service.UserService;
 
+public class _UserDetails implements UserDetails {
+
+	@Autowired
 	private User user;
 	
-	public CustomUserDetails(User user) {
+	public _UserDetails(User user) {
 		this.user = user;
 	}
 
@@ -20,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
+		if(user.isOTPRequired()){
+			return user.getOtp();
+		}
+		
 		return user.getPassword();
 	}
 
