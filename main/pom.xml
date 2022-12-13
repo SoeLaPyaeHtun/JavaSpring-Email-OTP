@@ -11,7 +11,7 @@
 	<groupId>net.codejava</groupId>
 	<artifactId>SpringBootRegistrationLogin</artifactId>
 	<version>1.0</version>
-	<name>SpringBootRegistrationLogin</name>
+	<name>SpringBootRegisxtrationLogin</name>
 	<description>Demo registration (sign up) and Login (Sign in)</description>
 
 	<properties>

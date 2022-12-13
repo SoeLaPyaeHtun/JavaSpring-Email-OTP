@@ -18,15 +18,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
-import me.nothing.login_.model.User;
-import me.nothing.login_.service.UserService;
+import me.nothing.login_.model.Staff;
+import me.nothing.login_.service.StaffService;
 
 
 @Component
 public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      
     @Autowired
-    private UserService userService;
+    private StaffService staffService;
 
          
     @Override
@@ -35,17 +35,18 @@ public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFi
          
         String username = request.getParameter("username");
         System.out.println(username);
-        User user = userService.getUserbyUsername(username);
-        System.out.println(user);
+        Staff staff = staffService.getUserbyUsername(username);
+        System.out.println(staff);
         
-        if(user != null){
-            float spamScore = getGoogleRecaptchaScore(); 
-            if(spamScore < 0.5){
-                if(user.isOTPRequired()){
+        boolean isOn = false;
+
+        if(staff != null){
+            if(isOn){
+                if(staff.isOTPRequired()){
                     return super.attemptAuthentication(request, response);
                 }
                 try{
-                userService.generateOneTimePassword(user);
+                staffService.generateOneTimePassword(staff);
                 throw new InsufficientAuthenticationException("OTP");  
                 }catch(MessagingException | UnsupportedEncodingException ex){
                     throw new AuthenticationServiceException("Error while sending otp");
@@ -54,10 +55,6 @@ public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFi
         }
 
         return super.attemptAuthentication(request, response);
-    }
-     
-    private float getGoogleRecaptchaScore() {
-        return 0.43f;
     }
 
     @Autowired

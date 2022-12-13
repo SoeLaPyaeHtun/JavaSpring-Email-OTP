@@ -15,56 +15,56 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import me.nothing.login_.model._UserDetails;
-import me.nothing.login_.model.User;
-import me.nothing.login_.repository.UserRepository;
+import me.nothing.login_.model._StaffDetails;
+import me.nothing.login_.model.Staff;
+import me.nothing.login_.repository.StaffRepository;
 import net.bytebuddy.utility.RandomString ;
 
 @Service
-public class UserService implements UserDetailsService {
+public class StaffService implements UserDetailsService {
 
 	@Autowired
-	private UserRepository userRepo;
+	private StaffRepository staffRepo;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username);
-		if (user == null) {
-			throw new UsernameNotFoundException("User not found");
+		Staff staff = staffRepo.findByUsername(username);
+		if (staff == null) {
+			throw new UsernameNotFoundException("Staff not found");
 		}
-		return new _UserDetails(user);
+		return new _StaffDetails(staff);
 	}
 
-	public User getUserbyUsername(String username) throws UsernameNotFoundException{
-		return userRepo.findByUsername(username);
+	public Staff getUserbyUsername(String username) throws UsernameNotFoundException{
+		return staffRepo.findByUsername(username);
 		
 		
 	}
 
-    public void generateOneTimePassword(User user) throws UnsupportedEncodingException, MessagingException {
+    public void generateOneTimePassword(Staff staff) throws UnsupportedEncodingException, MessagingException {
 		String OTP = RandomString.make(8);
 		System.out.println("OTP is: " + OTP);
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encoderOTP = passwordEncoder.encode(OTP);
-		user.setOtp(encoderOTP);
-		user.setOtptime(new Date());
+		staff.setOtp(encoderOTP);
+		staff.setOtpReqTime(new Date());
 
-		userRepo.save(user);
-		sendOTPEmail(user, OTP);
+		staffRepo.save(staff);
+		sendOTPEmail(staff, OTP);
     }
 
-	private void sendOTPEmail(User user, String OTP) throws UnsupportedEncodingException, MessagingException {
+	private void sendOTPEmail(Staff staff, String OTP) throws UnsupportedEncodingException, MessagingException {
 		MimeMessage message = mailSender.createMimeMessage();              
     	MimeMessageHelper helper = new MimeMessageHelper(message);
      
-    	helper.setFrom("contact@shopme.com", "Shopme Support");
-		System.out.println(user.getEmail());
-    	helper.setTo(user.getEmail());
+    	helper.setFrom("contact@hello.com", "Hello company");
+		System.out.println(staff.getEmail());
+    	helper.setTo(staff.getEmail());
      
     	String subject = "Here's your One Time Password (OTP) - Expire in 5 minutes!";
      
-    	String content = "<p>Hello " + user.getUsername() + "</p>"
+    	String content = "<p>Hello " + staff.getUsername() + "</p>"
             + "<p>For security reason, you're required to use the following "
             + "One Time Password to login:</p>"
             + "<p><b>" + OTP + "</b></p>"
@@ -82,4 +82,13 @@ public class UserService implements UserDetailsService {
 
 
 	@Autowired JavaMailSender mailSender;
+
+	public void clearOTP(Staff staff){
+		staff.setOtp(null);
+		staff.setOtpReqTime(null);
+
+		staffRepo.save(staff);
+
+		System.out.println("clear otp");
+	}
 }

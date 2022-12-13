@@ -6,15 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import me.nothing.login_.service.UserService;
 
-public class _UserDetails implements UserDetails {
+public class _StaffDetails implements UserDetails {
 
 	@Autowired
-	private User user;
+	private Staff staff;
 	
-	public _UserDetails(User user) {
-		this.user = user;
+	public _StaffDetails(Staff staff) {
+		this.staff = staff;
 	}
 
 	@Override
@@ -24,16 +23,16 @@ public class _UserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		if(user.isOTPRequired()){
-			return user.getOtp();
+		if(staff.isOTPRequired()){
+			return staff.getOtp();
 		}
 		
-		return user.getPassword();
+		return staff.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getEmail();
+		return staff.getEmail();
 	}
 
 	@Override
@@ -57,7 +56,11 @@ public class _UserDetails implements UserDetails {
 	}
 	
 	public String getFullName() {
-		return user.getUsername();
+		return staff.getUsername();
+	}
+
+	public Staff getStaff(){
+		return this.staff;
 	}
 
 }
