@@ -29,11 +29,25 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 System.out.println("success");
 
 
+
+
                 _StaffDetails staffDetails = (_StaffDetails) authentication.getPrincipal();
                 System.out.println(staffDetails.getPassword());
                 Staff staff = staffDetails.getStaff();
+                
+                // String baseUrl = request.getContextPath();
+
+                // if(staffDetails.hasRole("staff")){
+                //     baseUrl += "/staff1";
+                // }
+
+                if(staff.getFailedAttempt() > 0){
+                    System.out.print(staff.getFailedAttempt());
+                    staffService.clearFailedAttempt(staff);
+                }
                 if(staff.isOTPRequired()){
                     staffService.clearOTP(staff);
+                     staffService.clearFailedAttempt(staff);
                 }
 
 

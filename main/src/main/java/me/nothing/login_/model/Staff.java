@@ -1,16 +1,28 @@
 package me.nothing.login_.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-// import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
 // import javax.persistence.ManyToOne;
 // import javax.persistence.OneToMany;
 // import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 
 // import org.apache.catalina.Manager;
 
@@ -23,6 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "staffs")
 public class Staff{
     @Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -38,8 +51,8 @@ public class Staff{
 	@Column(nullable = false, unique = true, length = 45)
 	private String email;
 
-	@Column(name="role_id", nullable = false)
-	private int roleId;
+	// @Column(name="role", nullable = false)
+	// private String role;
 
 	@Column(name="job_title", nullable = false)
 	private String title;
@@ -60,11 +73,26 @@ public class Staff{
 	@Column(name="anual_leave_entitlemnt")
 	private String anuLeave;
 
+	@Column(name = "account_locked", nullable = false)
+    private boolean accountLocked;
+     
+    @Column(name = "failed_attempt", nullable = false)
+    private int failedAttempt;
+
 	//@Column(name="otp_requested_time", nullable = false)
     //private int mediLeave;
 
 	//@Column(name="otp_requested_time", nullable = false)
     //private int compLeave;
+
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "staff_role",
+            joinColumns = @JoinColumn(name = "staff_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+            )
+    private Set<Role> roles = new HashSet<>();
 
 
 	
@@ -92,6 +120,8 @@ public class Staff{
          
         return true;
     }
+
+	
 }
 
 

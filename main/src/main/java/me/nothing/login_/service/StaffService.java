@@ -20,6 +20,7 @@ import me.nothing.login_.model.Staff;
 import me.nothing.login_.repository.StaffRepository;
 import net.bytebuddy.utility.RandomString ;
 
+
 @Service
 public class StaffService implements UserDetailsService {
 
@@ -42,7 +43,7 @@ public class StaffService implements UserDetailsService {
 	}
 
     public void generateOneTimePassword(Staff staff) throws UnsupportedEncodingException, MessagingException {
-		String OTP = RandomString.make(8);
+		String OTP = RandomString.make(6);
 		System.out.println("OTP is: " + OTP);
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -90,5 +91,26 @@ public class StaffService implements UserDetailsService {
 		staffRepo.save(staff);
 
 		System.out.println("clear otp");
+	}
+
+	public void increaseFailedAttempt(Staff staff) {
+		int newFailed = staff.getFailedAttempt() + 1;
+		System.out.println(newFailed);
+		staffRepo.updateFailedAttempt(newFailed, staff.getUsername());
+	}
+
+    // public void lockAcc(Staff staff) {
+
+	// 	staff.setAccountLocked(true);
+	// 	staffRepo.save(staff);
+    // }
+
+	// public void unLockAcc(Staff staff){
+	// 	staff.setAccountLocked(false);
+	// 	staffRepo.save(staff);
+	// }
+
+	public void clearFailedAttempt(Staff staff) {
+		staffRepo.updateFailedAttempt(0, staff.getUsername());
 	}
 }

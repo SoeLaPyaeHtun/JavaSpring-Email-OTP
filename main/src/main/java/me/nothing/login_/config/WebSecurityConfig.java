@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/home").authenticated()
+			.antMatchers("/home","/").hasAnyAuthority("admin","manager") 
 			.anyRequest().permitAll()
 			.and()
 			.addFilterBefore(beforeAuthenticationFilter, BeforeAuthenticationFilter.class)
@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.usernameParameter("username")
 				.passwordParameter("password")
-				.defaultSuccessUrl("/home")
+				.defaultSuccessUrl("/")
 				.permitAll()
 			.and()
 			.logout().logoutSuccessUrl("/login").permitAll();

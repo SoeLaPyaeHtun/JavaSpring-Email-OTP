@@ -40,6 +40,12 @@ public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFi
         
         boolean isOn = false;
 
+                
+        if(staff != null){
+        if(staff.getFailedAttempt() >= 5){
+            isOn = true;
+        }
+
         if(staff != null){
             if(isOn){
                 if(staff.isOTPRequired()){
@@ -53,7 +59,8 @@ public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 }
             }
         }
-
+    
+    }
         return super.attemptAuthentication(request, response);
     }
 
