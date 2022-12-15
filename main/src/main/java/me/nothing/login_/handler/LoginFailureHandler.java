@@ -15,13 +15,8 @@ import me.nothing.login_.model.Staff;
 import me.nothing.login_.service.StaffService;
 
 
-
-
-
 @Component
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-
-
 
 @Autowired
 private StaffService staffService;
@@ -30,12 +25,12 @@ private StaffService staffService;
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
 
-                System.out.print(exception.getMessage().contains("OTP"));
+            System.out.print(exception.getMessage().contains("OTP"));
             
 
-                System.out.println("Login error:" + exception.getMessage());
+            System.out.println("Login error:" + exception.getMessage());
 
-                String username = request.getParameter("username");
+            String username = request.getParameter("username");
                 
             String  failureUrl = "/login?error";
             if(exception.getMessage().contains("OTP")){

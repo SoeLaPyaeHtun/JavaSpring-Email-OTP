@@ -2,7 +2,6 @@ package me.nothing.login_.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-import me.nothing.login_.filter.BeforeAuthenticationFilter;
+import me.nothing.login_.filter.CustomAuthenticationFilter;
 import me.nothing.login_.handler.LoginSuccessHandler;
 import me.nothing.login_.service.StaffService;
 
@@ -66,23 +65,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/admin/**").hasAnyAuthority("admin")
 			.antMatchers("/manager/**").hasAnyAuthority("manager")
 			.antMatchers("/staff/**").hasAnyAuthority("staff")
-	
 			.and()
-			.addFilterBefore(beforeAuthenticationFilter, BeforeAuthenticationFilter.class)
+			.addFilterBefore(customAuthenticationFilter, CustomAuthenticationFilter.class)
 			.formLogin()
 				.loginPage("/login")
 				.usernameParameter("username")
 				.successHandler(successHandler).permitAll() 
 				.permitAll()
-
 			.and()
-			.logout().logoutSuccessUrl("/login")
+			.logout().logoutSuccessUrl("/login").permitAll()
 			.and()
 			.sessionManagement(session -> session
             .invalidSessionUrl("/login")
 			.maximumSessions(1)
         );
-	
 	}
 
 	@Autowired
@@ -100,11 +96,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return super.authenticationManagerBean();
 	}
 
-
-
-
 	@Autowired
-	private BeforeAuthenticationFilter beforeAuthenticationFilter;
+	private CustomAuthenticationFilter customAuthenticationFilter;
 
 
 

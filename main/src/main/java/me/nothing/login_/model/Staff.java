@@ -3,7 +3,6 @@ package me.nothing.login_.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,11 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
-// import javax.persistence.ManyToOne;
-// import javax.persistence.OneToMany;
-// import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -51,9 +45,6 @@ public class Staff{
 	@Column(nullable = false, unique = true, length = 45)
 	private String email;
 
-	// @Column(name="role", nullable = false)
-	// private String role;
-
 	@Column(name="job_title", nullable = false)
 	private String title;
 
@@ -70,21 +61,25 @@ public class Staff{
 	@Column(name="otp_requested_time")
 	private Date otpReqTime;
 
-	@Column(name="anual_leave_entitlemnt")
-	private String anuLeave;
+	// @Column(name="anual_leave_entitlemnt")
+	// private int anuLeave;
 
-	@Column(name = "account_locked", nullable = false)
-    private boolean accountLocked;
+	// @Column(name="medi_requested_entitlement")
+    // private int mediLeave;
+
+	// @Column(name="comp_requested_entitlement")
+    // private int compLeave;
+
      
     @Column(name = "failed_attempt", nullable = false)
     private int failedAttempt;
 
-	//@Column(name="otp_requested_time", nullable = false)
-    //private int mediLeave;
-
-	//@Column(name="otp_requested_time", nullable = false)
-    //private int compLeave;
-
+	// @ManyToMany(targetEntity = LeaveType.class,cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch=FetchType.EAGER)
+    // @JoinTable(name = "StaffAndLeaveType", joinColumns = {
+    //     @JoinColumn(name="staff_id", referencedColumnName = "staff_id")},
+    //     inverseJoinColumns = { @JoinColumn(name="LTid", referencedColumnName = "id")}
+    //     )
+    //     private List<LeaveType> LTSet;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -95,13 +90,6 @@ public class Staff{
     private Set<Role> roles = new HashSet<>();
 
 
-	
-	// @OneToMany(mappedBy="staff")
-	// private List<Leave> leave;
-
-	// @ManyToOne
-	// @JoinColumn(name="manager_id")
-	// private Manager manager;
 
 	private static final long otpDuration = 3 * 6 * 1000;  //valid in 3 min 
 
@@ -135,28 +123,3 @@ public class Staff{
 
 	
 }
-
-
-// @Data
-// @Entity
-// @Table(name = "users")
-// public class User {
-	
-// 	@Id
-// 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-// 	private Long id;
-	
-// 	@Column(nullable = false, unique = true, length = 45)
-// 	private String email;
-	
-// 	@Column(nullable = false, length = 64)
-// 	private String password;
-	
-// 	@Column(nullable = false, length = 20)
-// 	private String username;
-
-// 	@Column(name = "one_time_password")
-// 	private String otp;
-
-// 	@Column(name = "requested_time")
-// 	private Date otptime;

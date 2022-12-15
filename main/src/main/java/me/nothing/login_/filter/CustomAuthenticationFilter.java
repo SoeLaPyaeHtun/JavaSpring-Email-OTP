@@ -23,7 +23,7 @@ import me.nothing.login_.service.StaffService;
 
 
 @Component
-public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      
     @Autowired
     private StaffService staffService;
@@ -74,7 +74,7 @@ public class BeforeAuthenticationFilter extends UsernamePasswordAuthenticationFi
         super.setAuthenticationSuccessHandler(successHandler);
     }
      
-    public BeforeAuthenticationFilter() {
+    public CustomAuthenticationFilter() {
         super.setUsernameParameter("username");
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
     }
