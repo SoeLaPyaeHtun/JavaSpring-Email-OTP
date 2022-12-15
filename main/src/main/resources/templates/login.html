@@ -9,6 +9,10 @@
         <p class="text-danger">Error message</p>
     </div>
 
+    <div th:if="${invalidSession != null}">
+        <p th:text="${invalidSession}"></p>
+    </div>
+
     <div th:if="${param.otp}">
         <p class="text-danger">
             For security reason, we've sent an One-Time-Password (OTP)

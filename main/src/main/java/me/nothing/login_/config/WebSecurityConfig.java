@@ -14,12 +14,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 import me.nothing.login_.filter.BeforeAuthenticationFilter;
+import me.nothing.login_.handler.LoginSuccessHandler;
 import me.nothing.login_.service.StaffService;
 
 @Configuration
@@ -60,22 +62,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/home").authenticated()
-			.anyRequest().permitAll()
+			.antMatchers("/login").permitAll()
+			.antMatchers("/admin/**").hasAnyAuthority("admin")
+			.antMatchers("/manager/**").hasAnyAuthority("manager")
+			.antMatchers("/staff/**").hasAnyAuthority("staff")
+	
 			.and()
 			.addFilterBefore(beforeAuthenticationFilter, BeforeAuthenticationFilter.class)
 			.formLogin()
 				.loginPage("/login")
 				.usernameParameter("username")
-				.passwordParameter("password")
-				.defaultSuccessUrl("/home")
+				.successHandler(successHandler).permitAll() 
 				.permitAll()
+
 			.and()
-			.logout().logoutSuccessUrl("/login").permitAll();
+			.logout().logoutSuccessUrl("/login")
+			.and()
+			.sessionManagement(session -> session
+            .invalidSessionUrl("/login")
+			.maximumSessions(1)
+        );
+	
 	}
 
+	@Autowired
+	private LoginSuccessHandler successHandler;
 
-	
+	@Bean
+	public SessionRegistry sessionRegistry(){
+		SessionRegistry sessionRegistry = new SessionRegistryImpl();
+		return sessionRegistry;
+	}
 
 	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
 	@Override
@@ -88,5 +105,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private BeforeAuthenticationFilter beforeAuthenticationFilter;
+
+
 
 }

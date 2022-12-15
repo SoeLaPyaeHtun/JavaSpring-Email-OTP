@@ -1,13 +1,16 @@
 package me.nothing.login_.handler;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +33,29 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 
                 _StaffDetails staffDetails = (_StaffDetails) authentication.getPrincipal();
+
+                System.out.println(staffDetails.getUsername());
+
+                Collection<? extends GrantedAuthority> authorities= staffDetails.getAuthorities();
+                System.out.println(authorities);
+                authorities.forEach(auth -> System.out.println(auth.getAuthority()));
+
+
+                String currentUrl = request.getContextPath();
+                System.out.println(currentUrl);
+                
+                if(staffDetails.hasRole("admin")){
+                    currentUrl+="/admin";
+                }
+
+                if(staffDetails.hasRole("staff")){
+                    currentUrl+="/staff";
+                }
+
+                if(staffDetails.hasRole("manager")){
+                    currentUrl+="/manager";
+                }
+
                 System.out.println(staffDetails.getPassword());
                 Staff staff = staffDetails.getStaff();
                 if(staff.isOTPRequired()){
@@ -37,7 +63,8 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 }
 
 
-        super.onAuthenticationSuccess(request, response, authentication);
+                response.sendRedirect(currentUrl);
+
     }
 
     
