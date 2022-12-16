@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,45 +17,42 @@ import me.nothing.login_.model.Staff;
 import me.nothing.login_.model._StaffDetails;
 import me.nothing.login_.service.StaffService;
 
-
-
 @Component
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Autowired
     private StaffService staffService;
-    
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
-                _StaffDetails staffDetails = (_StaffDetails) authentication.getPrincipal();
+        _StaffDetails staffDetails = (_StaffDetails) authentication.getPrincipal();
 
-                Collection<? extends GrantedAuthority> authorities= staffDetails.getAuthorities();
-                authorities.forEach(auth -> System.out.println(auth.getAuthority()));
-                String currentUrl = request.getContextPath();
-                
-                if(staffDetails.hasRole("admin")){
-                    currentUrl+="/admin";
-                }
+        Collection<? extends GrantedAuthority> authorities = staffDetails.getAuthorities();
+        authorities.forEach(auth -> System.out.println(auth.getAuthority()));
+        String currentUrl = request.getContextPath();
 
-                if(staffDetails.hasRole("staff")){
-                    currentUrl+="/staff";
-                }
+        if (staffDetails.hasRole("admin")) {
+            currentUrl += "/admin";
+        }
 
-                if(staffDetails.hasRole("manager")){
-                    currentUrl+="/manager";
-                }
+        if (staffDetails.hasRole("staff")) {
+            currentUrl += "/staff";
+        }
 
-                Staff staff = staffDetails.getStaff();
-                if(staff.isOTPRequired()){
-                    staffService.clearOTP(staff);
-                }
-                response.sendRedirect(currentUrl);
+        if (staffDetails.hasRole("manager")) {
+            currentUrl += "/manager";
+        }
 
-                staffService.clearFailedAttempt(staff);
+        Staff staff = staffDetails.getStaff();
+        if (staff.isOTPRequired()) {
+            staffService.clearOTP(staff);
+        }
+        response.sendRedirect(currentUrl);
+
+        staffService.clearFailedAttempt(staff);
 
     }
 
-    
 }

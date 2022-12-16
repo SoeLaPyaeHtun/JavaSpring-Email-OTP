@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service;
 import me.nothing.login_.model._StaffDetails;
 import me.nothing.login_.model.Staff;
 import me.nothing.login_.repository.StaffRepository;
-import net.bytebuddy.utility.RandomString ;
+//import net.bytebuddy.utility.RandomString;
 
 @Service
 public class StaffService implements UserDetailsService {
 
 	@Autowired
 	private StaffRepository staffRepo;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Staff staff = staffRepo.findByUsername(username);
@@ -36,17 +36,16 @@ public class StaffService implements UserDetailsService {
 		return new _StaffDetails(staff);
 	}
 
-	public Staff getUserbyUsername(String username) throws UsernameNotFoundException{
+	public Staff getUserbyUsername(String username) throws UsernameNotFoundException {
 		return staffRepo.findByUsername(username);
-		
-		
+
 	}
 
-    public void generateOneTimePassword(Staff staff) throws UnsupportedEncodingException, MessagingException {
+	public void generateOneTimePassword(Staff staff) throws UnsupportedEncodingException, MessagingException {
 		// String OTP = RandomString.make(8);
 
 		Random rnd = new Random();
-    	String OTP = Integer.toString(rnd.nextInt(999999));
+		String OTP = Integer.toString(rnd.nextInt(999999));
 
 		System.out.println("OTP is: " + OTP);
 
@@ -57,38 +56,38 @@ public class StaffService implements UserDetailsService {
 
 		staffRepo.save(staff);
 		sendOTPEmail(staff, OTP);
-    }
+	}
 
 	private void sendOTPEmail(Staff staff, String OTP) throws UnsupportedEncodingException, MessagingException {
-		MimeMessage message = mailSender.createMimeMessage();              
-    	MimeMessageHelper helper = new MimeMessageHelper(message);
-     
-    	helper.setFrom("contact@hello.com", "Hello company");
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom("contact@hello.com", "Hello company");
 		System.out.println(staff.getEmail());
-    	helper.setTo(staff.getEmail());
-     
-    	String subject = "Here's your One Time Password (OTP) - Expire in 5 minutes!";
-     
-    	String content = "<p>Hello " + staff.getUsername() + "</p>"
-            + "<p>For security reason, you're required to use the following "
-            + "One Time Password to login:</p>"
-            + "<p><b>" + OTP + "</b></p>"
-            + "<br>"
-            + "<p>Note: this OTP is set to expire in 5 minutes.</p>";
-     
-    helper.setSubject(subject);
-     
-    helper.setText(content, true);
-     
-    mailSender.send(message);
+		helper.setTo(staff.getEmail());
 
-	System.out.println("email was sent");
-	} 
+		String subject = "Here's your One Time Password (OTP) - Expire in 5 minutes!";
 
+		String content = "<p>Hello " + staff.getUsername() + "</p>"
+				+ "<p>For security reason, you're required to use the following "
+				+ "One Time Password to login:</p>"
+				+ "<p><b>" + OTP + "</b></p>"
+				+ "<br>"
+				+ "<p>Note: this OTP is set to expire in 5 minutes.</p>";
 
-	@Autowired JavaMailSender mailSender;
+		helper.setSubject(subject);
 
-	public void clearOTP(Staff staff){
+		helper.setText(content, true);
+
+		mailSender.send(message);
+
+		System.out.println("email was sent");
+	}
+
+	@Autowired
+	JavaMailSender mailSender;
+
+	public void clearOTP(Staff staff) {
 		staff.setOtp(null);
 		staff.setOtpReqTime(null);
 

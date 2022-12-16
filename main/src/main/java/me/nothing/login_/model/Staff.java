@@ -17,23 +17,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
-
 // import org.apache.catalina.Manager;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "staffs")
-public class Staff{
-    @Id
-	@GeneratedValue(strategy =  GenerationType.IDENTITY)
-	@Column(name="staff_id",nullable = false)
+public class Staff {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "staff_id", nullable = false)
 	private long id;
 
 	@Column(nullable = false, length = 20)
@@ -45,7 +43,7 @@ public class Staff{
 	@Column(nullable = false, unique = true, length = 45)
 	private String email;
 
-	@Column(name="job_title", nullable = false)
+	@Column(name = "job_title", nullable = false)
 	private String title;
 
 	private String firstname;
@@ -54,72 +52,64 @@ public class Staff{
 
 	private String status;
 
-
-	@Column(name="one_time_password")
+	@Column(name = "one_time_password")
 	private String otp;
 
-	@Column(name="otp_requested_time")
+	@Column(name = "otp_requested_time")
 	private Date otpReqTime;
 
 	// @Column(name="anual_leave_entitlemnt")
 	// private int anuLeave;
 
 	// @Column(name="medi_requested_entitlement")
-    // private int mediLeave;
+	// private int mediLeave;
 
 	// @Column(name="comp_requested_entitlement")
-    // private int compLeave;
+	// private int compLeave;
 
-     
-    @Column(name = "failed_attempt", nullable = false)
-    private int failedAttempt;
+	@Column(name = "failed_attempt", nullable = false)
+	private int failedAttempt;
 
-	// @ManyToMany(targetEntity = LeaveType.class,cascade = {CascadeType.ALL, CascadeType.PERSIST}, fetch=FetchType.EAGER)
-    // @JoinTable(name = "StaffAndLeaveType", joinColumns = {
-    //     @JoinColumn(name="staff_id", referencedColumnName = "staff_id")},
-    //     inverseJoinColumns = { @JoinColumn(name="LTid", referencedColumnName = "id")}
-    //     )
-    //     private List<LeaveType> LTSet;
+	// @ManyToMany(targetEntity = LeaveType.class,cascade = {CascadeType.ALL,
+	// CascadeType.PERSIST}, fetch=FetchType.EAGER)
+	// @JoinTable(name = "StaffAndLeaveType", joinColumns = {
+	// @JoinColumn(name="staff_id", referencedColumnName = "staff_id")},
+	// inverseJoinColumns = { @JoinColumn(name="LTid", referencedColumnName = "id")}
+	// )
+	// private List<LeaveType> LTSet;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "staff_role",
-            joinColumns = @JoinColumn(name = "staff_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-            )
-    private Set<Role> roles = new HashSet<>();
+	@JoinTable(name = "staff_role", joinColumns = @JoinColumn(name = "staff_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 
-
-
-	private static final long otpDuration = 3 * 6 * 1000;  //valid in 3 min 
+	private static final long otpDuration = 3 * 6 * 1000; // valid in 3 min
 
 	public boolean isOTPRequired() {
-        if (this.getOtp() == null) {
-            return false;
-        }
-         
-        long currentTimeInMillis = System.currentTimeMillis();
-        long otpRequestedTimeInMillis = this.otpReqTime.getTime();
-         
-        if (otpRequestedTimeInMillis + otpDuration < currentTimeInMillis) {
-            // OTP expires
-            return false;
-        }
-         
-        return true;
-    }
+		if (this.getOtp() == null) {
+			return false;
+		}
 
-	public boolean hasRole(String roleName){
+		long currentTimeInMillis = System.currentTimeMillis();
+		long otpRequestedTimeInMillis = this.otpReqTime.getTime();
+
+		if (otpRequestedTimeInMillis + otpDuration < currentTimeInMillis) {
+			// OTP expires
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean hasRole(String roleName) {
 		Iterator<Role> iterator = roles.iterator();
 
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			Role role = iterator.next();
-			if(role.getName().equals(roleName)){
+			if (role.getName().equals(roleName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	
 }

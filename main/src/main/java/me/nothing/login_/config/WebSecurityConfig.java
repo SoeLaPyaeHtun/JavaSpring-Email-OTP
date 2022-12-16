@@ -1,6 +1,5 @@
 package me.nothing.login_.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,40 +16,39 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import me.nothing.login_.filter.CustomAuthenticationFilter;
 import me.nothing.login_.handler.LoginSuccessHandler;
 import me.nothing.login_.service.StaffService;
 
-// @Deprecated
+@Deprecated
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new StaffService();
 	}
-	
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-	
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
+
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
-		
+
 		return authProvider;
 	}
 
@@ -62,34 +60,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/login").permitAll()
-			.antMatchers("/admin/**").hasAnyAuthority("admin")
-			.antMatchers("/manager/**").hasAnyAuthority("manager")
-			.antMatchers("/staff/**").hasAnyAuthority("staff")
-			.and()
-			.addFilterBefore(customAuthenticationFilter, CustomAuthenticationFilter.class)
-			.formLogin()
+				.antMatchers("/login").permitAll()
+				.antMatchers("/admin/**").hasAuthority("admin")
+				.antMatchers("/manager/**").hasAuthority("manager")
+				.antMatchers("/staff/**").hasAuthority("staff")
+				.and()
+				.addFilterBefore(customAuthenticationFilter, CustomAuthenticationFilter.class)
+				.formLogin()
 				.loginPage("/login")
 				.usernameParameter("username")
-				.successHandler(successHandler).permitAll() 
+				.successHandler(successHandler).permitAll()
 				.permitAll()
-			.and()
-			.logout().logoutSuccessUrl("/login").permitAll()
-			.and()
-			.sessionManagement(session -> session
-            .invalidSessionUrl("/login")
-			.maximumSessions(1)
-        );
+				.and()
+				.logout().logoutSuccessUrl("/login?logout=true").permitAll();
+				// .and()
+				// .sessionManagement()
+				// .invalidSessionUrl("/login?session=true");
+
 	}
 
 	@Autowired
 	private LoginSuccessHandler successHandler;
 
-	@Bean
-	public SessionRegistry sessionRegistry(){
-		SessionRegistry sessionRegistry = new SessionRegistryImpl();
-		return sessionRegistry;
-	}
+	// @Bean
+	// public SessionRegistry sessionRegistry() {
+	// 	SessionRegistry sessionRegistry = new SessionRegistryImpl();
+	// 	return sessionRegistry;
+	// }
+
+
+	// @Bean
+	// public HttpSessionEventPublisher httpSessionEventPublisher() {
+	// 	return new HttpSessionEventPublisher();
+	// }
 
 	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
 	@Override
@@ -99,7 +102,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private CustomAuthenticationFilter customAuthenticationFilter;
-
-
 
 }

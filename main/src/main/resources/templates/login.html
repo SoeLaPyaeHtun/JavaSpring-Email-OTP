@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/styles/css/main.css}" rel="stylesheet" />
-    <link th:href="@{/styles/css/util.css}" rel="stylesheet" />
 
 </head>
 
@@ -34,6 +33,14 @@
                             Note: The OTP will expire after 5 minutes.
                         </p>
                     </div>
+
+                    <div th:if="${param.sessiontimeout}">
+                        <p class="text-danger" style="text-align: center; color: rosybrown;">
+                          Session Experied <br>
+                          Please Re-Login
+                        </p>
+                    </div>
+
                     <div th:if="${param.logout}">
                         <p class="text-warning">You have been logged out.</p>
                     </div>
@@ -43,7 +50,7 @@
 
                         <div th:if="${param.otp == null}" class="wrap-input100 validate-input m-b-26">
                             <span class="label-input100">Username</span>
-                            <input type="username" class="input100" name="username" placeholder="Enter username">
+                            <input type="username" class="input100" name="username" placeholder="Enter username" required>
                             <span class="focus-input100"></span>
                         </div>
                         <div th:if="${param.otp != null}">
@@ -53,7 +60,7 @@
                         <div class="wrap-input100 validate-input m-b-18">
                             <span class="label-input100" th:text="${param.otp != null ? 'OTP' : 'Password'}"></span>
                             <input class="input100" th:type="password" name="password"
-                                th:placeholder="${param.otp != null ? 'Enter One Time Password' : 'Password'}">
+                                th:placeholder="${param.otp != null ? 'Enter One Time Password' : 'Password'}" required>
                             <span class="focus-input100"></span>
                         </div>
 

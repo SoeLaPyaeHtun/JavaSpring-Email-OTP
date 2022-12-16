@@ -9,15 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import me.nothing.login_.model.Staff;
 
-
 @Transactional
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 	@Query("SELECT u FROM Staff u WHERE u.username = :username")
 	public Staff findByUsername(@Param("username") String uername);
-	
 
-
-@Query("UPDATE Staff SET failedAttempt = :failedAttempt WHERE username = :username ")
-@Modifying
-public void updateFailedAttempt(@Param("failedAttempt")int failedAttempt,@Param("username") String username);
+	@Query("UPDATE Staff SET failedAttempt = :failedAttempt WHERE username = :username ")
+	@Modifying
+	public void updateFailedAttempt(@Param("failedAttempt") int failedAttempt, @Param("username") String username);
 }

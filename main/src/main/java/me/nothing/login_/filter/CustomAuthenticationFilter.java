@@ -21,42 +21,37 @@ import org.springframework.stereotype.Component;
 import me.nothing.login_.model.Staff;
 import me.nothing.login_.service.StaffService;
 
-
 @Component
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-     
+
     @Autowired
     private StaffService staffService;
 
-         
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-         
+
         String username = request.getParameter("username");
         System.out.println(username);
         Staff staff = staffService.getUserbyUsername(username);
         System.out.println(staff);
         boolean isOn = false;
 
-
-        if(staff != null){
-            if(staff.getFailedAttempt() >= 5){
+        if (staff != null) {
+            if (staff.getFailedAttempt() >= 5) {
                 isOn = true;
             }
         }
-    
 
-
-        if(staff != null){
-            if(isOn){
-                if(staff.isOTPRequired()){
+        if (staff != null) {
+            if (isOn) {
+                if (staff.isOTPRequired()) {
                     return super.attemptAuthentication(request, response);
                 }
-                try{
-                staffService.generateOneTimePassword(staff);
-                throw new InsufficientAuthenticationException("OTP");  
-                }catch(MessagingException | UnsupportedEncodingException ex){
+                try {
+                    staffService.generateOneTimePassword(staff);
+                    throw new InsufficientAuthenticationException("OTP");
+                } catch (MessagingException | UnsupportedEncodingException ex) {
                     throw new AuthenticationServiceException("Error while sending otp");
                 }
             }
@@ -69,24 +64,22 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         super.setAuthenticationManager(authenticationManager);
     }
-     
+
     @Autowired
     @Override
     public void setAuthenticationFailureHandler(AuthenticationFailureHandler failureHandler) {
         super.setAuthenticationFailureHandler(failureHandler);
     }
-     
+
     @Autowired
     @Override
     public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler successHandler) {
         super.setAuthenticationSuccessHandler(successHandler);
     }
-     
+
     public CustomAuthenticationFilter() {
         super.setUsernameParameter("username");
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
     }
 
 }
-    
-

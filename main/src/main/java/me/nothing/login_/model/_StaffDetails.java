@@ -10,12 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 public class _StaffDetails implements UserDetails {
 
 	@Autowired
 	private Staff staff;
-	
+
 	public _StaffDetails(Staff staff) {
 		this.staff = staff;
 	}
@@ -23,20 +22,20 @@ public class _StaffDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<Role> roles = staff.getRoles();
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-         
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        return authorities;
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+		for (Role role : roles) {
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		}
+		return authorities;
 	}
 
 	@Override
 	public String getPassword() {
-		if(staff.isOTPRequired()){
+		if (staff.isOTPRequired()) {
 			return staff.getOtp();
 		}
-		
+
 		return staff.getPassword();
 	}
 
@@ -64,16 +63,16 @@ public class _StaffDetails implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	public String getFullName() {
 		return staff.getUsername();
 	}
 
-	public Staff getStaff(){
+	public Staff getStaff() {
 		return this.staff;
 	}
 
-	public boolean hasRole(String roleName){
+	public boolean hasRole(String roleName) {
 		return staff.hasRole(roleName);
 	}
 }
