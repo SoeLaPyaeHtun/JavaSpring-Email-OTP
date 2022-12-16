@@ -29,20 +29,12 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-                System.out.println("success");
-
 
                 _StaffDetails staffDetails = (_StaffDetails) authentication.getPrincipal();
 
-                System.out.println(staffDetails.getUsername());
-
                 Collection<? extends GrantedAuthority> authorities= staffDetails.getAuthorities();
-                System.out.println(authorities);
                 authorities.forEach(auth -> System.out.println(auth.getAuthority()));
-
-
                 String currentUrl = request.getContextPath();
-                System.out.println(currentUrl);
                 
                 if(staffDetails.hasRole("admin")){
                     currentUrl+="/admin";
@@ -56,14 +48,13 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     currentUrl+="/manager";
                 }
 
-                System.out.println(staffDetails.getPassword());
                 Staff staff = staffDetails.getStaff();
                 if(staff.isOTPRequired()){
                     staffService.clearOTP(staff);
                 }
-
-
                 response.sendRedirect(currentUrl);
+
+                staffService.clearFailedAttempt(staff);
 
     }
 

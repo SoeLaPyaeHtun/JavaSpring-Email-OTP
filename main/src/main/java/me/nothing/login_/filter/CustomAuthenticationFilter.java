@@ -37,8 +37,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         System.out.println(username);
         Staff staff = staffService.getUserbyUsername(username);
         System.out.println(staff);
-        
         boolean isOn = false;
+
+
+        if(staff != null){
+            if(staff.getFailedAttempt() >= 5){
+                isOn = true;
+            }
+        }
+    
+
 
         if(staff != null){
             if(isOn){

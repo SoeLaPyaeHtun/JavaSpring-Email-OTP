@@ -23,6 +23,7 @@ import me.nothing.login_.filter.CustomAuthenticationFilter;
 import me.nothing.login_.handler.LoginSuccessHandler;
 import me.nothing.login_.service.StaffService;
 
+// @Deprecated
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)

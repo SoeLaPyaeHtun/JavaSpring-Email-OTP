@@ -2,6 +2,7 @@ package me.nothing.login_.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.Random;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -42,7 +43,11 @@ public class StaffService implements UserDetailsService {
 	}
 
     public void generateOneTimePassword(Staff staff) throws UnsupportedEncodingException, MessagingException {
-		String OTP = RandomString.make(8);
+		// String OTP = RandomString.make(8);
+
+		Random rnd = new Random();
+    	String OTP = Integer.toString(rnd.nextInt(999999));
+
 		System.out.println("OTP is: " + OTP);
 
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -90,5 +95,15 @@ public class StaffService implements UserDetailsService {
 		staffRepo.save(staff);
 
 		System.out.println("clear otp");
+	}
+
+	public void increaseFailedAttempt(Staff staff) {
+		int newFailed = staff.getFailedAttempt() + 1;
+		System.out.println(newFailed);
+		staffRepo.updateFailedAttempt(newFailed, staff.getUsername());
+	}
+
+	public void clearFailedAttempt(Staff staff) {
+		staffRepo.updateFailedAttempt(0, staff.getUsername());
 	}
 }
