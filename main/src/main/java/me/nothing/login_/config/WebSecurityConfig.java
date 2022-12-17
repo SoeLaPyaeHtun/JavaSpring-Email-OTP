@@ -72,10 +72,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.successHandler(successHandler).permitAll()
 				.permitAll()
 				.and()
-				.logout().logoutSuccessUrl("/login?logout=true").permitAll();
-				// .and()
-				// .sessionManagement()
-				// .invalidSessionUrl("/login?session=true");
+				.logout().logoutSuccessUrl("/login?logout=true").permitAll()
+				.and()
+				.sessionManagement()
+				.invalidSessionUrl("/login?logout=true");
 
 	}
 

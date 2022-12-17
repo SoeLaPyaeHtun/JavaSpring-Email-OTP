@@ -18,6 +18,18 @@ This is login system with one time password which is send by email.
 - Spring Security
 - Mail
 - Mysql Connector
+- spring boot session
+  
+
+#### features
+- login , logout with spring boot security
+- users password encoding and decoding with bcrypt object
+- spring security redirect users page after login based on roles
+- need to login after failed password five times
+- send one time password via email (six digits )
+- spring boot security session timeout
+- custom error page
+- google recaptcha v3
 
 
 # Reference

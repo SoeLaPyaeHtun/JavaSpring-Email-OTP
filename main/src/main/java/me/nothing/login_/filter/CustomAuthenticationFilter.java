@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
+import me.nothing.login_.handler.ReCaptchaHandler;
 import me.nothing.login_.model.Staff;
 import me.nothing.login_.service.StaffService;
 
@@ -31,6 +32,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
+        String recaptchaFormResponse = request.getParameter("g-recaptcha-response");
+        ReCaptchaHandler reCaptchaHandler = new ReCaptchaHandler();
+        float score = reCaptchaHandler.verify(recaptchaFormResponse);
+
         String username = request.getParameter("username");
         System.out.println(username);
         Staff staff = staffService.getUserbyUsername(username);
@@ -38,7 +43,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         boolean isOn = false;
 
         if (staff != null) {
-            if (staff.getFailedAttempt() >= 5) {
+            if (staff.getFailedAttempt() >= 5 || score < 0.5) {
                 isOn = true;
             }
         }
