@@ -26,7 +26,7 @@ This is login system with one time password which is send by email.
 - users password encoding and decoding with bcrypt object
 - spring security redirect users page after login based on roles
 - need to login after failed password five times
-- send one time password via email (six digits )
+- auto send one time password(six digits) via email after failed password five times 
 - spring boot security session timeout
 - custom error page
 - google recaptcha v3
