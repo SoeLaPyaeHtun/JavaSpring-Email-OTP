@@ -16,7 +16,7 @@ This is login system with one time password which is send by email.
 - Spring Boot Devtool
 - JPA
 - Spring Security
-- Mail
+- Spring boot Mail
 - Mysql Connector
 - spring boot session
   
